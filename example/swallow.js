@@ -1,7 +1,7 @@
 require('../index.js');
 /////// HANDLER CODE
 const child = Zone.current.fork({
-  handleError: function () {
+  handleError() {
     return true;
   }
 });

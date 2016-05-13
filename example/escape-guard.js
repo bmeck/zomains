@@ -1,14 +1,11 @@
 require('../index.js');
-/////// HANDLER CODE
 const child = new Zone({
-  handleError: function () {
+  handleError() {
     console.log('handleError Fired');
   }
 });
 setTimeout(()=>{
-  child.run(
-    ()=> {
-      throw Error('Not intercepted');
-    }
-  )
+  child.run(()=> {
+    throw Error('Not intercepted');
+  })
 })

@@ -1,12 +1,11 @@
 require('../index.js');
-/////// HANDLER CODE
 const child = Zone.current.fork({
-  handleError: function () {
+  handleError() {
     console.log('handleError Fired');
   }
 });
-child.run(
-  ()=>setTimeout(()=>{
+child.run(()=>{
+  setTimeout(()=>{
     throw Error('Now handled?!');
   })
-)
+})
