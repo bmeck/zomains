@@ -40,6 +40,7 @@ function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
     if (guarded) {
       try {
         HandleError.call(domain, e);
+        domain.exit();
         return;
       }
       catch (re) {
