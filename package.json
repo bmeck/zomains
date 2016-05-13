@@ -1,12 +1,11 @@
 {
   "name": "zomains",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "https://github.com/domenic/zones implemented using domains",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "bradleymeck",
+  "license": "MIT"
 }
