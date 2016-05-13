@@ -8,4 +8,4 @@ setTimeout(()=>{
   child.run(()=> {
     throw Error('Not intercepted');
   })
-})
+});
