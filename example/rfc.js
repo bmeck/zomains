@@ -1,11 +1,19 @@
+'use strict';
 require('../index.js');
+const UnexpectedError = require('./COMMON').UnexpectedError;
+let tocall = 2;
+process.on('exit', ()=>{
+  if (tocall !== 0) {
+    process.reallyExit(1);
+  }
+});
 /////// HANDLER CODE
 function handleError1() {
-  console.log('HANDLER1');
+  tocall--;
   return false;
 }
 function handleError2() {
-  console.log('HANDLER2');
+  tocall--;
   return false;
 }
 

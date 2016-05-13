@@ -194,3 +194,4 @@ Object.defineProperty(Zone, 'prototype', {
 // this is [[CurrentZone]]
 let CURRENT_ZONE = new Zone({name:'(root zone)'});
 CALL_MAP.get(CURRENT_ZONE).domain.enter();
+CALL_MAP.get(CURRENT_ZONE).domain._events.error = null;
