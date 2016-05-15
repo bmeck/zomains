@@ -26,31 +26,31 @@ function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
     throw TypeError(`Expected Zone ${zone} to have Call`);
   }
   const tmp = CURRENT_ZONE;
-  CURRENT_ZONE = zone;
   const meta = CALL_MAP.get(zone);
   const domain = meta.domain;
   try {
     let ret;
     domain.enter();
     ret = callback.apply(thisArg, argumentsList);
-    domain.exit();
+    //domain.exit();
     return ret;
   }
   catch (e) {
     if (guarded) {
       try {
         HandleError.call(domain, e);
-        domain.exit();
+        //domain.exit();
         return;
       }
       catch (re) {
         e = re;
       }
     }
-    domain.exit();
+    //domain.exit();
     throw e;
   }
   finally {
+        domain.exit();
     CURRENT_ZONE = tmp;
   }
 }

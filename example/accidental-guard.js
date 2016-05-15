@@ -6,9 +6,9 @@ require('../');
 
 const path = require('path');
 const COMMON = require('./COMMON');
-const EXPECTED = COMMON.expectUncaught(path.basename(__filename));
+const EXPECTED = COMMON.UncaughtException(path.basename(__filename));
 const child = Zone.current.fork({
-  handleError: COMMON.expectedCalls(1)
+  handleError: COMMON.expected([{arguments:[EXPECTED]}])
 });
 child.run(()=>{
   setTimeout(()=>{

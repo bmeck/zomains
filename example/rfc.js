@@ -6,9 +6,9 @@ require('../index.js');
 /////// HANDLER CODE
 const path = require('path');
 const COMMON = require('./COMMON');
-const EXPECTED = COMMON.expectUncaught('boo');
-const handleError1 = COMMON.expectedCalls(1);
-const handleError2 = COMMON.expectedCalls(1);
+const EXPECTED = COMMON.UncaughtException('boo');
+const handleError1 = COMMON.expected([{arguments:[EXPECTED]}]);
+const handleError2 = COMMON.expected([{arguments:[EXPECTED]}]);
 
 /////// LIBRARY CODE
 

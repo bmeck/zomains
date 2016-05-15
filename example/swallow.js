@@ -4,9 +4,10 @@ require('../index.js');
 // This example shows error propagation stopping
 
 const COMMON = require('./COMMON');
+const err = Error('unexpected');
 const child = new Zone({
-  handleError: COMMON.expectedCalls(1, _ => true)
+  handleError: COMMON.expected([{arguments:[err]}], _ => true)
 });
 child.runGuarded(() => {
-  throw Error('unexpected');
+  throw err;
 });

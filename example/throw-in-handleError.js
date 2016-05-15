@@ -6,10 +6,13 @@ require('../index.js');
 
 const path = require('path');
 const COMMON = require('./COMMON');
-const EXPECTED = COMMON.expectUncaught(path.basename(__filename));
+const err = Error('unexpected');
+const EXPECTED = COMMON.UncaughtException(path.basename(__filename));
 const child = Zone.current.fork({
-  handleError: COMMON.expectedCalls(1, _=>{throw EXPECTED})
+  handleError: COMMON.expected([{
+    arguments: [err]
+  }], _=>{throw EXPECTED;})
 });
 child.runGuarded(() => {
-  throw Error('unexpected');
+  throw err;
 });
