@@ -32,25 +32,22 @@ function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
     let ret;
     domain.enter();
     ret = callback.apply(thisArg, argumentsList);
-    //domain.exit();
     return ret;
   }
   catch (e) {
     if (guarded) {
       try {
         HandleError.call(domain, e);
-        //domain.exit();
         return;
       }
       catch (re) {
         e = re;
       }
     }
-    //domain.exit();
     throw e;
   }
   finally {
-        domain.exit();
+    domain.exit();
     CURRENT_ZONE = tmp;
   }
 }

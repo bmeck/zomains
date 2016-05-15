@@ -4,8 +4,8 @@ require('../');
 const watching = new Map();
 const expect = require('expect');
 const expected = new Set();
+const errors = [];
 process.on('exit', () => {
-  const errors = [];
   Array.from(watching.keys()).forEach((spy) => {
     const invocations = watching.get(spy);
     try {
@@ -29,6 +29,14 @@ process.on('uncaughtException', (e) => {
   }
   process.exit(0);
 })
+exports.checkZone = function (expected) {
+  if (Zone.current !== expected) {
+    const err = new Error('expected different Zone to be current');
+    err.found = Zone.current;
+    err.expected = expected;
+    errors.push(err);
+  }
+}
 exports.UncaughtException = function (msg) {
   const err = Error('Expected: ' + msg);
   expected.add(err);
