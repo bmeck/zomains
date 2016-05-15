@@ -31,7 +31,7 @@ function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
   const domain = meta.domain;
   try {
     let ret;
-    domain.enter()
+    domain.enter();
     ret = callback.apply(thisArg, argumentsList);
     domain.exit();
     return ret;
@@ -61,12 +61,12 @@ Promise.prototype.then = function (on_fulfill, on_reject) {
   const zone = Zone.current;
   const guarded = true;
   return $then.call(this,
-    function () {
-      return Call(zone, on_fulfill, this, arguments, guarded);
-    },
-    function () {
-      return Call(zone, on_reject, this, arguments, guarded);
-    }
+    typeof on_fulfill === 'function' ? function () {
+      return CallInZone(zone, on_fulfill, this, arguments, guarded);
+    } : on_fulfill,
+    typeof on_reject === 'function' ? function () {
+      return CallInZone(zone, on_reject, this, arguments, guarded);
+    } : on_reject
   );
 }
 Promise.prototype.catch = function (on_reject) {

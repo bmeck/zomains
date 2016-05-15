@@ -1,5 +1,9 @@
 'use strict';
 require('../');
+
+// This example shows that error guarding behavior is always
+// re-enabled upon *any* asynchronous task
+
 const UnexpectedError = require('./COMMON').UnexpectedError;
 let tocall = 1;
 process.on('exit', ()=>{

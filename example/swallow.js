@@ -1,5 +1,8 @@
 'use strict';
 require('../index.js');
+
+// This example shows errors being swallowed
+
 const UnexpectedError = require('./COMMON').UnexpectedError;
 let tocall = 1;
 process.on('exit', ()=>{

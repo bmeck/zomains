@@ -1,5 +1,9 @@
 'use strict';
 require('../index.js');
+
+// This example shows that errors inside of handleError escape
+// the Zone
+
 const UnexpectedError = require('./COMMON').UnexpectedError;
 let tocall = 1;
 process.on('exit', ()=>{
