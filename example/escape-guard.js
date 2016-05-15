@@ -15,9 +15,12 @@ const child = new Zone({
 });
 // our caller
 caller.run(()=> {
+  COMMON.checkZone(caller);
   // start the escape
   child.run(()=>{
+    COMMON.checkZone(child);
     setTimeout(()=>{
+      COMMON.checkZone(child);
       throw EXPECTED;
     });
   });

@@ -14,5 +14,6 @@ const child = Zone.current.fork({
   }], _=>{throw EXPECTED;})
 });
 child.runGuarded(() => {
+  COMMON.checkZone(child);
   throw err;
 });

@@ -9,5 +9,6 @@ const child = new Zone({
   handleError: COMMON.expected([{arguments:[err]}], _ => true)
 });
 child.runGuarded(() => {
+  COMMON.checkZone(child);
   throw err;
 });

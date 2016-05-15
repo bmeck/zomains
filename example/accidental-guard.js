@@ -11,7 +11,9 @@ const child = Zone.current.fork({
   handleError: COMMON.expected([{arguments:[EXPECTED]}])
 });
 child.run(()=>{
+  COMMON.checkZone(child);
   setTimeout(()=>{
+    COMMON.checkZone(child);
     throw EXPECTED;
   });
 });

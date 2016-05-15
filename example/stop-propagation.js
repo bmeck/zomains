@@ -12,5 +12,6 @@ const child = parent.fork({
   handleError: COMMON.expected([{arguments:[err]}], _ => true)
 });
 child.runGuarded(() => {
+  COMMON.checkZone(child);
   throw err;
 });

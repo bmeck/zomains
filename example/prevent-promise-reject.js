@@ -12,6 +12,7 @@ const child = Zone.current.fork({
   handleError: COMMON.expected([{arguments:[rejection]}], _ => true)
 });
 child.run(()=>{
+  COMMON.checkZone(child);
   Promise.resolve(0)
     .then(
       COMMON.expected([{

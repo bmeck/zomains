@@ -12,7 +12,9 @@ const child = new Zone({
   handleError: COMMON.expected([{arguments:[EXPECTED]}])
 });
 child.run(() => {
+  COMMON.checkZone(child);
   function cb(err) {
+    COMMON.checkZone(child);
     throw EXPECTED;
   }
   fs.stat(path.join(__filename, 'invalid'), cb);
