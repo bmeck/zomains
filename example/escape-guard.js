@@ -4,22 +4,22 @@ require('../index.js');
 // This example shows how to ensure no error guarding behavior
 // prevents throw from reaching the host environment
 
-const UnexpectedError = require('./COMMON').UnexpectedError;
-let tocall = 1;
-process.on('exit', ()=>{
-  if (tocall !== 0) {
-    process.reallyExit(1);
-  }
-});
+const COMMON = require('./COMMON');
+const EXPECTED = COMMON.expectUncaught();
+const caller = new Zone({
+  handleError: COMMON.unexpected()
+})
 const child = new Zone({
-  handleError() {
-    tocall--;
-  }
+  handleError: COMMON.expectedCalls(1)
 });
-child.run(()=>{
-  setTimeout(()=>{
-    child.run(()=> {
-      throw Error('Not intercepted');
-    })
+// our caller
+caller.run(()=> {
+  // start the escape
+  child.run(()=>{
+    setTimeout(()=>{
+      child.run(()=> {
+        throw EXPECTED;
+      })
+    });
   });
 });

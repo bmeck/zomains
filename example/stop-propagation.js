@@ -3,25 +3,13 @@ require('../index.js');
 
 // This example shows error propagation stopping
 
-const UnexpectedError = require('./COMMON').UnexpectedError;
-let tocall = 1;
-process.on('exit', ()=>{
-  if (tocall !== 0) {
-    process.reallyExit(1);
-  }
-});
+const COMMON = require('./COMMON');
 const parent = Zone.current.fork({
-  handleError() {
-    tocall--;
-    process.exit(1);
-  }
+  handleError: COMMON.unexpected()
 });
 const child = parent.fork({
-  handleError() {
-    tocall--;
-    return true;
-  }
+  handleError: COMMON.expectedCalls(1, _ => true)
 });
 child.runGuarded(() => {
-  throw Error('Now handled.');
+  throw Error('unexpected');
 });

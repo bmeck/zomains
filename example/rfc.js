@@ -1,21 +1,13 @@
 'use strict';
 require('../index.js');
-const UnexpectedError = require('./COMMON').UnexpectedError;
-let tocall = 2;
-process.on('exit', ()=>{
-  if (tocall !== 0) {
-    process.reallyExit(1);
-  }
-});
+
+// This example is taken from https://github.com/domenic/zones/issues/9
+
 /////// HANDLER CODE
-function handleError1() {
-  tocall--;
-  return false;
-}
-function handleError2() {
-  tocall--;
-  return false;
-}
+const COMMON = require('./COMMON');
+const EXPECTED = COMMON.expectUncaught('boo');
+const handleError1 = COMMON.expectedCalls(1);
+const handleError2 = COMMON.expectedCalls(1);
 
 /////// LIBRARY CODE
 
@@ -42,7 +34,7 @@ const zone2 = rootZone.fork({
 zone1.run(function a() {
   sql.addListener(function b() {
     rootZone.run(function c() {
-      throw new Error("boo");
+      throw EXPECTED;
     });
   });
 });

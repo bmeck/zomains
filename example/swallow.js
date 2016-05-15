@@ -1,21 +1,12 @@
 'use strict';
 require('../index.js');
 
-// This example shows errors being swallowed
+// This example shows error propagation stopping
 
-const UnexpectedError = require('./COMMON').UnexpectedError;
-let tocall = 1;
-process.on('exit', ()=>{
-  if (tocall !== 0) {
-    process.reallyExit(1);
-  }
-});
-const child = Zone.current.fork({
-  handleError() {
-    tocall--;
-    return true;
-  }
+const COMMON = require('./COMMON');
+const child = new Zone({
+  handleError: COMMON.expectedCalls(1, _ => true)
 });
 child.runGuarded(() => {
-  throw UnexpectedError('should have been swallowed');
+  throw Error('unexpected');
 });
