@@ -4,6 +4,7 @@ require('../index.js');
 // This example is taken from https://github.com/domenic/zones/issues/9
 
 /////// HANDLER CODE
+const path = require('path');
 const COMMON = require('./COMMON');
 const EXPECTED = COMMON.expectUncaught('boo');
 const handleError1 = COMMON.expectedCalls(1);

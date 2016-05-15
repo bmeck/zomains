@@ -4,8 +4,9 @@ require('../index.js');
 // This example shows how to ensure no error guarding behavior
 // prevents throw from reaching the host environment
 
+const path = require('path');
 const COMMON = require('./COMMON');
-const EXPECTED = COMMON.expectUncaught();
+const EXPECTED = COMMON.expectUncaught(path.basename(__filename));
 const caller = new Zone({
   handleError: COMMON.unexpected()
 })

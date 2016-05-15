@@ -25,7 +25,7 @@ process.on('uncaughtException', (e) => {
   process.exit(0);
 })
 exports.expectUncaught = function (msg) {
-  const err = Error(msg);
+  const err = Error('Expected: ' + msg);
   expected.add(err);
   return err;
 }
