@@ -32,16 +32,16 @@ const zone2 = rootZone.fork({
   handleError: handleError2
 });
 
-zone1.run(function a() {
-  sql.addListener(function b() {
-    rootZone.run(function c() {
+zone1.run(function a() {//a will not have zone1 guard
+  sql.addListener(function b() {//b will have zone1 guard
+    rootZone.run(function c() {//c will not have rootZone guard
       throw EXPECTED;
     });
   });
 });
 
-zone2.run(function d() {
-  setTimeout(function e() {
+zone2.run(function d() {//d will not have zone1 guard
+  setTimeout(function e() {//e will have zone2 guard
     sql.doStuff();
   }, 0);
 });

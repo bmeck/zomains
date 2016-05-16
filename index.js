@@ -5,47 +5,34 @@ function HostZoneSetup(zone, opts) {
   // generally populate [[HostDefined]]
 }
 
-// Required for special cases like Domains
-let CALL_MAP = new WeakMap();
+// Required for holding zone on domain
+let ZONE_META = new WeakMap();
+// Used to properly handle zone guarding
+let GUARDING = true;
+
 function HandleError(e) {
-  let zone = this.zone;
-  let handled = false;
-  while (handled !== true && zone !== null) {
-    const meta = CALL_MAP.get(zone);
-    if (typeof meta.handleError === 'function') {
-      handled = meta.handleError(e);
+  if (GUARDING) {
+    let zone = this.zone;
+    while (zone !== null) {
+      const handleError = ZONE_META.get(zone).handleError;
+      if (handleError && handleError(e) === true) return;
+      zone = zone.parent;
     }
-    zone = zone.parent; 
   }
-  if (handled !== true) {
-    throw e;
-  }
+  throw e;
 }
 function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
-  const tmp = CURRENT_ZONE;
-  const meta = CALL_MAP.get(zone);
-  const domain = meta.domain;
+  const old_zone = CURRENT_ZONE;
+  const old_guard = GUARDING;
+  GUARDING = guarded;
   try {
-    let ret;
-    domain.enter();
-    ret = callback.apply(thisArg, argumentsList);
-    return ret;
-  }
-  catch (e) {
-    if (guarded) {
-      try {
-        HandleError.call(domain, e);
-        return;
-      }
-      catch (re) {
-        e = re;
-      }
-    }
-    throw e;
+    return ZONE_META.get(zone).domain.run(
+      ()=>callback.apply(thisArg, argumentsList)
+    );
   }
   finally {
-    domain.exit();
-    CURRENT_ZONE = tmp;
+    GUARDING = old_guard;
+    CURRENT_ZONE = old_zone;
   }
 }
 
@@ -75,6 +62,7 @@ const HostDefinedZoneMap = new WeakMap();
 
 // Zone constructor is %Zone%
 // Zone.prototype is %ZonePrototype%
+let HANDLE_ERROR;
 global.Zone = class Zone extends Object {
   
   static get current() {
@@ -87,11 +75,14 @@ global.Zone = class Zone extends Object {
     options = typeof options === 'undefined' ? {} : options;
     let name = '(unnamed zone)';
     let parent = null;
+    let handleError = null;
     Object(options); // require it to be coercible
     const opt_name = options.name;
     if (opt_name !== undefined) name = opt_name;
     const opt_parent = options.parent;
     if (opt_parent !== undefined) parent = opt_parent;
+    const opt_handleError = options.handleError;
+    if (typeof opt_handleError === 'function') handleError = opt_handleError;
     if (parent !== null) {
       if (ParentZoneMap.has(parent) !== true) {
         throw TypeError();
@@ -115,9 +106,7 @@ global.Zone = class Zone extends Object {
     const $exit = meta.domain.exit;
     let last_zone;
     // rage against the domain
-    meta.domain._events = {
-      error: [HandleError]
-    };
+    meta.domain._events = HANDLE_ERROR;
     delete meta.domain.addListener;
     delete meta.domain.removeListener;
     delete meta.domain.on;
@@ -133,9 +122,9 @@ global.Zone = class Zone extends Object {
       return ret;
     }
     meta.domain.zone = this;
-    meta.handleError = options.handleError;
+    meta.handleError = handleError;
     Object.freeze(meta.domain);
-    CALL_MAP.set(this, meta);
+    ZONE_META.set(this, meta);
   }
   
   
@@ -187,6 +176,9 @@ Object.defineProperty(Zone, 'prototype', {
   configurable: false
 });
 // this is [[CurrentZone]]
+HANDLE_ERROR = null;
 let CURRENT_ZONE = new Zone({name:'(root zone)'});
-CALL_MAP.get(CURRENT_ZONE).domain.enter();
-CALL_MAP.get(CURRENT_ZONE).domain._events.error = null;
+ZONE_META.get(CURRENT_ZONE).domain.enter();
+HANDLE_ERROR = Object.freeze({
+  error: Object.freeze(HandleError)
+});
