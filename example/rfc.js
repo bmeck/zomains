@@ -7,8 +7,8 @@ require('../index.js');
 const path = require('path');
 const COMMON = require('./COMMON');
 const EXPECTED = COMMON.UncaughtException('boo');
-const handleError1 = COMMON.expected([{arguments:[EXPECTED]}]);
-const handleError2 = COMMON.expected([{arguments:[EXPECTED]}]);
+const handleError1 = COMMON.expected('handleError1', [{arguments:[EXPECTED]}]);
+const handleError2 = COMMON.expected('handleError2', [{arguments:[EXPECTED]}]);
 
 /////// LIBRARY CODE
 

@@ -6,7 +6,7 @@ require('../index.js');
 const COMMON = require('./COMMON');
 const err = Error('unexpected');
 const child = new Zone({
-  handleError: COMMON.expected([{arguments:[err]}], _ => true)
+  handleError: COMMON.expected('handleError', [{arguments:[err]}], _ => true)
 });
 child.runGuarded(() => {
   COMMON.checkZone(child);

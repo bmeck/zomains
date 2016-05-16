@@ -9,7 +9,7 @@ const COMMON = require('./COMMON');
 const err = Error('unexpected');
 const EXPECTED = COMMON.UncaughtException(path.basename(__filename));
 const child = Zone.current.fork({
-  handleError: COMMON.expected([{
+  handleError: COMMON.expected('handleError that throws', [{
     arguments: [err]
   }], _=>{throw EXPECTED;})
 });

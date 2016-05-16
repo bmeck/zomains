@@ -9,7 +9,7 @@ const parent = Zone.current.fork({
   handleError: COMMON.unexpected()
 });
 const child = parent.fork({
-  handleError: COMMON.expected([{arguments:[err]}], _ => true)
+  handleError: COMMON.expected('handleError', [{arguments:[err]}], _ => true)
 });
 child.runGuarded(() => {
   COMMON.checkZone(child);

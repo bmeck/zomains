@@ -22,9 +22,6 @@ function HandleError(e) {
   }
 }
 function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
-  if (!CALL_MAP.has(zone)) {
-    throw TypeError(`Expected Zone ${zone} to have Call`);
-  }
   const tmp = CURRENT_ZONE;
   const meta = CALL_MAP.get(zone);
   const domain = meta.domain;
@@ -56,13 +53,14 @@ function CallInZone(zone, callback, thisArg, argumentsList, guarded) {
 const $then = Promise.prototype.then;
 Promise.prototype.then = function (on_fulfill, on_reject) {
   const zone = Zone.current;
-  const guarded = true;
+  // Promises do their own Error handling
+  // TODO: How can userland code act the same as this?
   return $then.call(this,
     typeof on_fulfill === 'function' ? function () {
-      return CallInZone(zone, on_fulfill, this, arguments, guarded);
+      return CallInZone(zone, on_fulfill, this, arguments, false);
     } : on_fulfill,
     typeof on_reject === 'function' ? function () {
-      return CallInZone(zone, on_reject, this, arguments, guarded);
+      return CallInZone(zone, on_reject, this, arguments, false);
     } : on_reject
   );
 }

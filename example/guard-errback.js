@@ -9,7 +9,7 @@ const path = require('path');
 const COMMON = require('./COMMON');
 const EXPECTED = COMMON.UncaughtException(path.basename(__filename));
 const child = new Zone({
-  handleError: COMMON.expected([{arguments:[EXPECTED]}])
+  handleError: COMMON.expected('handleError', [{arguments:[EXPECTED]}])
 });
 child.run(() => {
   COMMON.checkZone(child);

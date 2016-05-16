@@ -11,7 +11,7 @@ const caller = new Zone({
   handleError: COMMON.unexpected()
 })
 const child = new Zone({
-  handleError: COMMON.expected([{arguments:[EXPECTED]}])
+  handleError: COMMON.expected('handleError', [{arguments:[EXPECTED]}])
 });
 // our caller
 caller.run(()=> {
